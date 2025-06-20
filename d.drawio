@@ -1,0 +1,220 @@
+<mxfile host="65bd71144e">
+    <diagram id="GumYhK-HHvBKXGv-NO4e" name="Страница — 1">
+        <mxGraphModel dx="3337" dy="603" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+            <root>
+                <mxCell id="0"/>
+                <mxCell id="1" parent="0"/>
+                <mxCell id="2" value="sequenceDiagram&#xa;    actor Пользователь&#xa;    participant BankApp as &quot;BankApp&lt;br/&gt;(Интерфейс)&quot;&#xa;    participant BankSistem as &quot;BankSistem&lt;br/&gt;(Ядро модели)&quot;&#xa;    participant Generator as &quot;Generator&lt;br/&gt;(Генерация клиентов)&quot;&#xa;    participant Klient as &quot;Klient&lt;br/&gt;(Клиенты)&quot;&#xa;    participant Sotrudnik as &quot;Sotrudnik&lt;br/&gt;(Консультанты)&quot;&#xa;    participant Statistika as &quot;Statistika&lt;br/&gt;(Сбор данных)&quot;&#xa;    &#xa;    %% Стили для улучшения визуального восприятия&#xa;    rect rgb(220, 220, 255)&#xa;    note right of Пользователь: ИНИЦИАЛИЗАЦИЯ СИСТЕМЫ&#xa;    &#xa;    Пользователь-&gt;&gt;+BankApp: Нажатие кнопки &quot;Старт&quot;&#xa;    BankApp-&gt;&gt;+BankSistem: Создание(chastota, skorost, kol_sotr)&#xa;    BankSistem--&gt;&gt;Sotrudnik: Создание сотрудников&#xa;    BankSistem--&gt;&gt;Generator: Создание(sistema, chastota)&#xa;    BankSistem--&gt;&gt;Statistika: Создание()&#xa;    BankSistem--&gt;&gt;-BankApp: Экземпляр системы&#xa;    &#xa;    BankApp-&gt;&gt;+BankSistem: zapusk()&#xa;    BankSistem-&gt;&gt;BankSistem: sbros()&#xa;    BankSistem-&gt;&gt;+Generator: sled_klient(tek_vremya)&#xa;    Generator--&gt;&gt;-BankSistem: dobavit_sobitie(Sobitie(PRISHEL))&#xa;    BankSistem--&gt;&gt;-BankApp: Готово&#xa;    end&#xa;    &#xa;    rect rgb(200, 240, 200)&#xa;    note right of BankApp: ОСНОВНОЙ ЦИКЛ МОДЕЛИРОВАНИЯ&#xa;    loop Пока rabotaet == True&#xa;        activate BankApp&#xa;        BankApp-&gt;&gt;+BankSistem: sled_shag()&#xa;        BankSistem-&gt;&gt;Statistika: update_vremya(vremya)&#xa;        &#xa;        alt Событие PRISHEL (приход клиента)&#xa;            rect rgb(230, 230, 255)&#xa;            BankSistem-&gt;&gt;+Generator: obrabotka_sobytiya(sobitie)&#xa;            Generator-&gt;&gt;Klient: Создание(sistema, vremya)&#xa;            Generator-&gt;&gt;BankSistem: noviy_klient(klient, vremya)&#xa;            BankSistem-&gt;&gt;Statistika: noviy_klient()&#xa;            &#xa;            alt Есть свободный сотрудник&#xa;                BankSistem-&gt;&gt;BankSistem: naiti_svobodnogo()&#xa;                BankSistem-&gt;&gt;BankSistem: nachat_obsluzhivanie(sotrudnik, klient, vremya)&#xa;                BankSistem-&gt;&gt;Statistika: dobavit_ozhidanie(ozhidanie)&#xa;                BankSistem-&gt;&gt;BankSistem: dobavit_sobitie(Sobitie(OBSLUJEN))&#xa;                note right of BankSistem: Планирование&lt;br/&gt;окончания обслуживания&#xa;            else Нет свободных сотрудников&#xa;                BankSistem-&gt;&gt;BankSistem: добавление клиента в очередь&#xa;                note right of BankSistem: Клиент ожидает&lt;br/&gt;в очереди&#xa;            end&#xa;            &#xa;            Generator-&gt;&gt;BankSistem: sled_klient(vremya) &#xa;            note right of Generator: Планирование&lt;br/&gt;следующего клиента&#xa;            Generator--&gt;&gt;-BankSistem: Готово&#xa;            end&#xa;        else Событие OBSLUJEN (завершение обслуживания)&#xa;            rect rgb(255, 230, 200)&#xa;            BankSistem-&gt;&gt;+Sotrudnik: obrabotka_sobytiya(sobitie)&#xa;            Sotrudnik-&gt;&gt;-BankSistem: zaversheniye_obslujivaniya(sotrudnik, vremya)&#xa;            BankSistem-&gt;&gt;Statistika: klient_obslujen()&#xa;            &#xa;            rect rgb(255, 200, 180)&#xa;            note right of BankSistem: ЦИКЛ ОБРАБОТКИ ОЧЕРЕДИ&#xa;            opt Есть клиенты в очереди&#xa;                loop Пока есть клиенты и сотрудник свободен&#xa;                    BankSistem-&gt;&gt;BankSistem: извлечение клиента из очереди&#xa;                    BankSistem-&gt;&gt;BankSistem: nachat_obsluzhivanie(sotrudnik, klient, vremya)&#xa;                    BankSistem-&gt;&gt;Statistika: dobavit_ozhidanie(ozhidanie)&#xa;                    BankSistem-&gt;&gt;BankSistem: dobavit_sobitie(Sobitie(OBSLUJEN))&#xa;                end&#xa;            end&#xa;            end&#xa;            end&#xa;        end&#xa;        &#xa;        BankSistem--&gt;&gt;-BankApp: Результат шага&#xa;        BankApp-&gt;&gt;BankApp: obnovit_ekran()&#xa;        note right of BankApp: Обновление интерфейса&lt;br/&gt;каждые 0.1 сек&#xa;        deactivate BankApp&#xa;    end&#xa;    end&#xa;    &#xa;    rect rgb(255, 220, 220)&#xa;    note right of Пользователь: ЗАВЕРШЕНИЕ РАБОТЫ&#xa;    Пользователь-&gt;&gt;+BankApp: Нажатие кнопки &quot;Стоп&quot;&#xa;    BankApp-&gt;&gt;BankApp: rabotaet = False&#xa;    BankApp-&gt;&gt;BankApp: остановка потока моделирования&#xa;    BankApp--&gt;&gt;-Пользователь: Система остановлена&#xa;    end" style="shadow=0;dashed=0;align=left;strokeWidth=1;shape=mxgraph.mermaid.abstract.mermaid;labelBackgroundColor=#ffffff;noLabel=1;theme=default;" vertex="1" parent="1">
+                    <mxGeometry x="-1850" y="440" width="2250" height="1600" as="geometry"/>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+    <diagram id="kgpKYQtTHZ0yAKxKKP6v" name="Page-1">
+        <mxGraphModel dx="1422" dy="762" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+            <root>
+                <mxCell id="0"/>
+                <mxCell id="1" parent="0"/>
+                <mxCell id="3nuBFxr9cyL0pnOWT2aG-1" value="Пользователь" style="shape=umlLifeline;perimeter=lifelinePerimeter;container=1;collapsible=0;recursiveResize=0;rounded=0;shadow=0;strokeWidth=1;" parent="1" vertex="1">
+                    <mxGeometry x="40" y="80" width="100" height="620" as="geometry"/>
+                </mxCell>
+                <mxCell id="3nuBFxr9cyL0pnOWT2aG-2" value="" style="points=[];perimeter=orthogonalPerimeter;rounded=0;shadow=0;strokeWidth=1;" parent="3nuBFxr9cyL0pnOWT2aG-1" vertex="1">
+                    <mxGeometry x="45" y="70" width="10" height="520" as="geometry"/>
+                </mxCell>
+                <mxCell id="3nuBFxr9cyL0pnOWT2aG-5" value="BankApp" style="shape=umlLifeline;perimeter=lifelinePerimeter;container=1;collapsible=0;recursiveResize=0;rounded=0;shadow=0;strokeWidth=1;" parent="1" vertex="1">
+                    <mxGeometry x="180" y="80" width="100" height="620" as="geometry"/>
+                </mxCell>
+                <mxCell id="3nuBFxr9cyL0pnOWT2aG-6" value="" style="points=[];perimeter=orthogonalPerimeter;rounded=0;shadow=0;strokeWidth=1;" parent="3nuBFxr9cyL0pnOWT2aG-5" vertex="1">
+                    <mxGeometry x="45" y="70" width="10" height="520" as="geometry"/>
+                </mxCell>
+                <mxCell id="3nuBFxr9cyL0pnOWT2aG-7" value="запуск" style="verticalAlign=bottom;startArrow=oval;endArrow=block;startSize=8;shadow=0;strokeWidth=1;" parent="1" source="3nuBFxr9cyL0pnOWT2aG-2" target="3nuBFxr9cyL0pnOWT2aG-6" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="155" y="160" as="sourcePoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="PECbxI3Qr3UB1aRGOBNB-1" value="BankSistem" style="shape=umlLifeline;perimeter=lifelinePerimeter;container=1;collapsible=0;recursiveResize=0;rounded=0;shadow=0;strokeWidth=1;" vertex="1" parent="1">
+                    <mxGeometry x="320" y="80" width="100" height="620" as="geometry"/>
+                </mxCell>
+                <mxCell id="PECbxI3Qr3UB1aRGOBNB-2" value="" style="points=[];perimeter=orthogonalPerimeter;rounded=0;shadow=0;strokeWidth=1;" vertex="1" parent="PECbxI3Qr3UB1aRGOBNB-1">
+                    <mxGeometry x="45" y="160" width="10" height="430" as="geometry"/>
+                </mxCell>
+                <mxCell id="PECbxI3Qr3UB1aRGOBNB-3" value="Generator" style="shape=umlLifeline;perimeter=lifelinePerimeter;container=1;collapsible=0;recursiveResize=0;rounded=0;shadow=0;strokeWidth=1;" vertex="1" parent="1">
+                    <mxGeometry x="460" y="80" width="100" height="620" as="geometry"/>
+                </mxCell>
+                <mxCell id="PECbxI3Qr3UB1aRGOBNB-4" value="" style="points=[];perimeter=orthogonalPerimeter;rounded=0;shadow=0;strokeWidth=1;" vertex="1" parent="PECbxI3Qr3UB1aRGOBNB-3">
+                    <mxGeometry x="45" y="180" width="10" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="PECbxI3Qr3UB1aRGOBNB-5" value="" style="points=[];perimeter=orthogonalPerimeter;rounded=0;shadow=0;strokeWidth=1;" vertex="1" parent="PECbxI3Qr3UB1aRGOBNB-3">
+                    <mxGeometry x="45" y="290" width="10" height="130" as="geometry"/>
+                </mxCell>
+                <mxCell id="PECbxI3Qr3UB1aRGOBNB-6" value="Sotrudnik" style="shape=umlLifeline;perimeter=lifelinePerimeter;container=1;collapsible=0;recursiveResize=0;rounded=0;shadow=0;strokeWidth=1;" vertex="1" parent="1">
+                    <mxGeometry x="600" y="80" width="100" height="620" as="geometry"/>
+                </mxCell>
+                <mxCell id="PECbxI3Qr3UB1aRGOBNB-7" value="" style="points=[];perimeter=orthogonalPerimeter;rounded=0;shadow=0;strokeWidth=1;" vertex="1" parent="PECbxI3Qr3UB1aRGOBNB-6">
+                    <mxGeometry x="45" y="370" width="10" height="50" as="geometry"/>
+                </mxCell>
+                <mxCell id="PECbxI3Qr3UB1aRGOBNB-8" value="" style="points=[];perimeter=orthogonalPerimeter;rounded=0;shadow=0;strokeWidth=1;" vertex="1" parent="PECbxI3Qr3UB1aRGOBNB-6">
+                    <mxGeometry x="45" y="470" width="10" height="50" as="geometry"/>
+                </mxCell>
+                <mxCell id="PECbxI3Qr3UB1aRGOBNB-9" value="Klient" style="shape=umlLifeline;perimeter=lifelinePerimeter;container=1;collapsible=0;recursiveResize=0;rounded=0;shadow=0;strokeWidth=1;" vertex="1" parent="1">
+                    <mxGeometry x="740" y="80" width="100" height="620" as="geometry"/>
+                </mxCell>
+                <mxCell id="PECbxI3Qr3UB1aRGOBNB-10" value="" style="points=[];perimeter=orthogonalPerimeter;rounded=0;shadow=0;strokeWidth=1;" vertex="1" parent="PECbxI3Qr3UB1aRGOBNB-9">
+                    <mxGeometry x="45" y="310" width="10" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="PECbxI3Qr3UB1aRGOBNB-11" value="sozdat_interfeis()" style="verticalAlign=bottom;endArrow=block;shadow=0;strokeWidth=1;entryX=0.1;entryY=0.132;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="235" y="169.63999999999996" as="sourcePoint"/>
+                        <mxPoint x="226" y="170" as="targetPoint"/>
+                        <Array as="points">
+                            <mxPoint x="270" y="170"/>
+                            <mxPoint x="270" y="190"/>
+                            <mxPoint x="250" y="190"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="PECbxI3Qr3UB1aRGOBNB-12" value="настройка параметров" style="verticalAlign=bottom;startArrow=oval;endArrow=block;startSize=8;shadow=0;strokeWidth=1;" edge="1" parent="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="95" y="210" as="sourcePoint"/>
+                        <mxPoint x="225" y="210" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="PECbxI3Qr3UB1aRGOBNB-13" value="нажатие &quot;Старт&quot;" style="verticalAlign=bottom;startArrow=oval;endArrow=block;startSize=8;shadow=0;strokeWidth=1;" edge="1" parent="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="95" y="240" as="sourcePoint"/>
+                        <mxPoint x="225" y="240" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="PECbxI3Qr3UB1aRGOBNB-14" value="создание BankSistem" style="verticalAlign=bottom;endArrow=block;shadow=0;strokeWidth=1;" edge="1" parent="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="235" y="260" as="sourcePoint"/>
+                        <mxPoint x="365" y="260" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="PECbxI3Qr3UB1aRGOBNB-15" value="создание Generator" style="verticalAlign=bottom;endArrow=block;shadow=0;strokeWidth=1;" edge="1" parent="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="375" y="280" as="sourcePoint"/>
+                        <mxPoint x="505" y="280" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="PECbxI3Qr3UB1aRGOBNB-16" value="zapusk()" style="verticalAlign=bottom;endArrow=block;shadow=0;strokeWidth=1;" edge="1" parent="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="235" y="320" as="sourcePoint"/>
+                        <mxPoint x="365" y="320" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="PECbxI3Qr3UB1aRGOBNB-17" value="sled_klient(0)" style="verticalAlign=bottom;endArrow=block;shadow=0;strokeWidth=1;" edge="1" parent="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="375" y="340" as="sourcePoint"/>
+                        <mxPoint x="505" y="340" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="PECbxI3Qr3UB1aRGOBNB-18" value="добавление события PRISHEL" style="verticalAlign=bottom;endArrow=block;shadow=0;strokeWidth=1;" edge="1" parent="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="505" y="360" as="sourcePoint"/>
+                        <mxPoint x="375" y="360" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="PECbxI3Qr3UB1aRGOBNB-19" value="tsikl_modelirovaniya()" style="verticalAlign=bottom;endArrow=block;shadow=0;strokeWidth=1;entryX=0.1;entryY=0.132;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="235" y="399.64" as="sourcePoint"/>
+                        <mxPoint x="226" y="400" as="targetPoint"/>
+                        <Array as="points">
+                            <mxPoint x="270" y="400"/>
+                            <mxPoint x="270" y="420"/>
+                            <mxPoint x="250" y="420"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="PECbxI3Qr3UB1aRGOBNB-20" value="sled_shag()" style="verticalAlign=bottom;endArrow=block;shadow=0;strokeWidth=1;" edge="1" parent="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="235" y="440" as="sourcePoint"/>
+                        <mxPoint x="365" y="440" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="PECbxI3Qr3UB1aRGOBNB-21" value="obrabotka_sobytiya(PRISHEL)" style="verticalAlign=bottom;endArrow=block;shadow=0;strokeWidth=1;" edge="1" parent="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="375" y="380" as="sourcePoint"/>
+                        <mxPoint x="505" y="380" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="PECbxI3Qr3UB1aRGOBNB-22" value="создание Klient" style="verticalAlign=bottom;endArrow=block;shadow=0;strokeWidth=1;" edge="1" parent="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="515" y="390" as="sourcePoint"/>
+                        <mxPoint x="785" y="390" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="PECbxI3Qr3UB1aRGOBNB-23" value="noviy_klient()" style="verticalAlign=bottom;endArrow=block;shadow=0;strokeWidth=1;" edge="1" parent="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="505" y="410" as="sourcePoint"/>
+                        <mxPoint x="375" y="410" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="PECbxI3Qr3UB1aRGOBNB-24" value="nachat_obsluzhivanie()" style="verticalAlign=bottom;endArrow=block;shadow=0;strokeWidth=1;" edge="1" parent="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="375" y="430" as="sourcePoint"/>
+                        <mxPoint x="645" y="430" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="PECbxI3Qr3UB1aRGOBNB-25" value="добавление события OBSLUJEN" style="verticalAlign=bottom;endArrow=block;shadow=0;strokeWidth=1;" edge="1" parent="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="375" y="460" as="sourcePoint"/>
+                        <mxPoint x="365" y="490" as="targetPoint"/>
+                        <Array as="points">
+                            <mxPoint x="350" y="460"/>
+                            <mxPoint x="330" y="460"/>
+                            <mxPoint x="330" y="490"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="PECbxI3Qr3UB1aRGOBNB-26" value="sled_shag()" style="verticalAlign=bottom;endArrow=block;shadow=0;strokeWidth=1;" edge="1" parent="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="235" y="520" as="sourcePoint"/>
+                        <mxPoint x="365" y="520" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="PECbxI3Qr3UB1aRGOBNB-27" value="obrabotka_sobytiya(OBSLUJEN)" style="verticalAlign=bottom;endArrow=block;shadow=0;strokeWidth=1;" edge="1" parent="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="375" y="530" as="sourcePoint"/>
+                        <mxPoint x="645" y="530" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="PECbxI3Qr3UB1aRGOBNB-28" value="zaversheniye_obslujivaniya()" style="verticalAlign=bottom;endArrow=block;shadow=0;strokeWidth=1;" edge="1" parent="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="645" y="550" as="sourcePoint"/>
+                        <mxPoint x="375" y="550" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="PECbxI3Qr3UB1aRGOBNB-29" value="obnovit_ekran()" style="verticalAlign=bottom;endArrow=block;shadow=0;strokeWidth=1;" edge="1" parent="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="225" y="580" as="sourcePoint"/>
+                        <mxPoint x="235" y="610" as="targetPoint"/>
+                        <Array as="points">
+                            <mxPoint x="210" y="580"/>
+                            <mxPoint x="190" y="580"/>
+                            <mxPoint x="190" y="610"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="PECbxI3Qr3UB1aRGOBNB-30" value="нажатие &quot;Стоп&quot;" style="verticalAlign=bottom;startArrow=oval;endArrow=block;startSize=8;shadow=0;strokeWidth=1;" edge="1" parent="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="95" y="630" as="sourcePoint"/>
+                        <mxPoint x="225" y="630" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="PECbxI3Qr3UB1aRGOBNB-31" value="Инициализация" style="shape=umlFrame;whiteSpace=wrap;html=1;width=100;height=30;" vertex="1" parent="1">
+                    <mxGeometry x="20" y="150" width="830" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="PECbxI3Qr3UB1aRGOBNB-32" value="Запуск моделирования" style="shape=umlFrame;whiteSpace=wrap;html=1;width=150;height=30;" vertex="1" parent="1">
+                    <mxGeometry x="20" y="220" width="830" height="180" as="geometry"/>
+                </mxCell>
+                <mxCell id="PECbxI3Qr3UB1aRGOBNB-33" value="Цикл моделирования" style="shape=umlFrame;whiteSpace=wrap;html=1;width=150;height=30;" vertex="1" parent="1">
+                    <mxGeometry x="20" y="410" width="830" height="200" as="geometry"/>
+                </mxCell>
+                <mxCell id="PECbxI3Qr3UB1aRGOBNB-34" value="Завершение" style="shape=umlFrame;whiteSpace=wrap;html=1;width=100;height=30;" vertex="1" parent="1">
+                    <mxGeometry x="20" y="620" width="830" height="50" as="geometry"/>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+</mxfile>
